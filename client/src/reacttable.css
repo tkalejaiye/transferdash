@@ -1,0 +1,30 @@
+.ReactTable {
+  background-color: #fff;
+  height: 400px;
+  border: none;
+}
+
+.ReactTable .rt-thead.-header {
+  box-shadow: none;
+  margin-bottom: 50px;
+  padding-top: 20px;
+  color: #000;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.ReactTable .rt-thead .rt-th,
+.ReactTable .rt-thead .rt-td {
+  border: none;
+}
+
+.ReactTable .rt-tbody .rt-tr-group {
+  border: none;
+}
+
+.ReactTable .rt-tbody .rt-td {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
