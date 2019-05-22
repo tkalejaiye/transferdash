@@ -5,6 +5,24 @@ const cors = require('cors')
 const dotenv = require('dotenv').config()
 const fetch = require('node-fetch')
 const shortid = require('short-id')
+const path = require('path')
+const port = process.env.PORT || 8000
+
+//Static file declaration
+app.use(express.static(path.join(__dirname, 'client/build')))
+
+//production mode
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')))
+  //
+  app.get('*', (req, res) => {
+    res.sendfile(path.join((__dirname = 'client/build/index.html')))
+  })
+}
+//build mode
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/public/index.html'))
+})
 
 // App Configuration
 app.use(bodyparser.json())
@@ -158,6 +176,4 @@ app.get('/api/check_balance', (req, res) => {
 })
 
 // Start server
-app.listen(process.env.PORT || 8000, () =>
-  console.log('Server running on port 8000')
-)
+app.listen(port, () => console.log('Server running on port 8000'))
