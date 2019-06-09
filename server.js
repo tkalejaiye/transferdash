@@ -21,7 +21,6 @@ app.get('/', (req, res) => {
 // Create a transfer recipient
 app.post('/api/create_recipient', (req, res) => {
   const body = { ...req.body, type: 'nuban', currency: 'NGN' }
-  console.log(req.body)
   fetch('https://api.paystack.co/transferrecipient', {
     method: 'POST',
     body: JSON.stringify(body),
@@ -53,6 +52,7 @@ app.get('/api/list_recipients', (req, res) => {
 app.put('/api/update_recipient/:id', (req, res) => {
   const recipient_id = req.params.id
   const body = { ...req.body }
+  console.log(body)
   fetch(`https://api.paystack.co/transferrecipient/${recipient_id}`, {
     method: 'PUT',
     headers: {

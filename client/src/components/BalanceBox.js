@@ -19,11 +19,13 @@ export default class BalanceBox extends Component {
       .catch(e => console.log(e))
   }
   render() {
+    const { currency, balance } = this.state.balance
+
     return (
       <div className="main-card">
         <div className="card-title">Account Balance</div>
         <h1>
-          {this.state.balance.currency} {this.state.balance.balance}
+          {currency} {balance / 100}
         </h1>
       </div>
     )

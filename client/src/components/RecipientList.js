@@ -4,17 +4,46 @@ import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import '../reacttable.css'
 import StatusIndicator from './StatusIndicator'
+import Modal from 'react-modal'
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+}
 
 export default class RecipientList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      recipients: []
+      recipients: [],
+      modalIsOpen: false,
+      activeRecipient: null
     }
   }
 
   componentDidMount = () => {
     this.getRecipients()
+  }
+
+  openModal = recipient => {
+    this.setState({
+      modalIsOpen: true,
+      activeRecipient: recipient
+    })
+  }
+
+  afterOpenModal = () => {
+    // references are now sync'd and can be accessed.
+  }
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false })
   }
 
   getRecipients = () => {
@@ -31,6 +60,26 @@ export default class RecipientList extends Component {
         result.status
           ? window.location.reload()
           : alert('Delete Transfer Recipient was unsuccessful')
+      )
+      .catch(e => alert(e))
+  }
+
+  editRecipient = recipient_id => {
+    fetch(`/api/update_recipient/${recipient_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: this.state.activeRecipient.name,
+        email: this.state.activeRecipient.email
+      })
+    })
+      .then(res => res.json())
+      .then(result =>
+        result.status
+          ? window.location.reload()
+          : alert('Could not successfully update recipient :(')
       )
       .catch(e => alert(e))
   }
@@ -82,11 +131,16 @@ export default class RecipientList extends Component {
             },
             {
               Header: '',
+              id: 'edit',
+              accessor: recipient => (
+                <button onClick={() => this.openModal(recipient)}>Edit</button>
+              )
+            },
+            {
+              Header: '',
               id: 'delete',
               accessor: recipient => (
-                <button
-                  onClick={() => this.deleteRecipient(recipient.recipient_code)}
-                >
+                <button onClick={() => this.deleteRecipient(recipient.id)}>
                   Delete
                 </button>
               ),
@@ -94,6 +148,65 @@ export default class RecipientList extends Component {
             }
           ]}
         />
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <form>
+            <ul>
+              <li className="form-container__input">
+                <label>Name</label>
+                <input
+                  type="text"
+                  value={
+                    this.state.activeRecipient
+                      ? this.state.activeRecipient.name
+                      : ''
+                  }
+                  onChange={event =>
+                    this.setState({
+                      activeRecipient: {
+                        ...this.state.activeRecipient,
+                        name: event.target.value
+                      }
+                    })
+                  }
+                />
+              </li>
+              <li className="form-container__input">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  value={
+                    this.state.activeRecipient
+                      ? this.state.activeRecipient.email
+                      : ''
+                  }
+                  onChange={event =>
+                    this.setState({
+                      activeRecipient: {
+                        ...this.state.activeRecipient,
+                        email: event.target.value
+                      }
+                    })
+                  }
+                />
+              </li>
+            </ul>
+          </form>
+          <button className="form-container__cancel" onClick={this.closeModal}>
+            Cancel
+          </button>
+          <button
+            className="form-container__submit"
+            onClick={() => this.editRecipient(this.state.activeRecipient.id)}
+          >
+            Update
+          </button>
+        </Modal>
       </div>
     )
   }
