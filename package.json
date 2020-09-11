@@ -20,7 +20,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.0",
     "mongoose": "^5.5.9",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "react-modal": "^3.8.1",
     "react-table": "^6.10.0",
     "request-promise": "^4.2.4",
